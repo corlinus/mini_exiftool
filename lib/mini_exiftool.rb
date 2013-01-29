@@ -49,6 +49,9 @@ class MiniExiftool
   #   <b>ATTENTION:</b> Time objects are created using <code>Time.local</code>
   #   therefore they use <em>your local timezone</em>, DateTime objects instead
   #   are created <em>without timezone</em>!
+  #
+  # * <code>:raw_params</code> pass raw params string to exiftool command-line
+  #   application. See man exiftool for more info.
   def initialize filename=nil, opts={}
     opts = @@opts.merge opts
     @numerical = opts[:numerical]
@@ -56,6 +59,7 @@ class MiniExiftool
     @convert_encoding = opts[:convert_encoding]
     @ignore_minor_errors = opts[:ignore_minor_errors]
     @timestamps = opts[:timestamps]
+    @raw_params = opts[:raw_params]
     @values = TagHash.new
     @tag_names = TagHash.new
     @changed_values = TagHash.new
@@ -88,6 +92,7 @@ class MiniExiftool
     opt_params << (@numerical ? '-n ' : '')
     opt_params << (@composite ? '' : '-e ')
     opt_params << (@convert_encoding ? '-L ' : '')
+    opt_params << @raw_params unless @raw_params.blank?
     cmd = %Q(#@@cmd -q -q -s -t #{opt_params} #{@@sep_op} #{Shellwords.escape(filename)})
     if run(cmd)
       parse_output
