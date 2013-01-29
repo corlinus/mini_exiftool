@@ -56,6 +56,7 @@ class MiniExiftool
     @convert_encoding = opts[:convert_encoding]
     @ignore_minor_errors = opts[:ignore_minor_errors]
     @timestamps = opts[:timestamps]
+    @raw_params = opts[:raw_params]
     @values = TagHash.new
     @tag_names = TagHash.new
     @changed_values = TagHash.new
@@ -88,6 +89,7 @@ class MiniExiftool
     opt_params << (@numerical ? '-n ' : '')
     opt_params << (@composite ? '' : '-e ')
     opt_params << (@convert_encoding ? '-L ' : '')
+    opt_params << @raw_params unless @raw_params.blank?
     cmd = %Q(#@@cmd -q -q -s -t #{opt_params} #{@@sep_op} #{Shellwords.escape(filename)})
     if run(cmd)
       parse_output
